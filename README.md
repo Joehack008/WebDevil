@@ -6,3 +6,12 @@ Linux install :
 pip install playwright
 
 playwright install
+
+## Commands
+
+| Feature                | Command                              |
+|------------------------|--------------------------------------|
+| Install dependencies   | `pip install playwright`             |
+| Install dependencies   | `playwright install`                 |
+
+
