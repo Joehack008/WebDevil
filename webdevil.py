@@ -1,9 +1,9 @@
 import os
+import subprocess
 from urllib.parse import urljoin, urlparse
 from playwright.sync_api import sync_playwright
 
 BANNER = r"""
-                                                                                                              
                                            _______                                             .---.          
                    __.....__     /|        \  ___ `'.         __.....__   .----.     .----..--.|   |          
        _     _ .-''         '.   ||         ' |--.\  \    .-''         '.  \    \   /    / |__||   |          
@@ -24,6 +24,7 @@ def main():
     # Get user input
     url = input("Enter the website URL (e.g., https://example.com): ").strip()
     keyword = input("Enter the word to search for: ").strip()
+    exclude_length = input("Enter the response length to exclude for Gobuster (e.g., 9914): ").strip()
 
     # Ensure proper URL format
     if not url.startswith("http://") and not url.startswith("https://"):
@@ -117,6 +118,16 @@ def main():
                 })).filter(meta => meta.content && meta.content.includes("%s"));
             }
         """ % keyword)
+
+        # Perform SSL testing
+        print("[+] Performing SSL tests...")
+        ssl_test_command = f"testssl {url}"
+        os.system(ssl_test_command)
+
+        # Perform Gobuster scan
+        print("[+] Running Gobuster...")
+        gobuster_command = f"gobuster dir -u {url} -w /usr/share/wordlists/dirb/common.txt --exclude-length {exclude_length} -o gobuster_results.txt"
+        os.system(gobuster_command)
 
         # Save results to a file
         results_folder = "scan_results"
